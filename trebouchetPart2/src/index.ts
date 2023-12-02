@@ -63,11 +63,11 @@ function getNumbers(lines: string[]): number[]{
     return strInts;
 }
 
-let theNumbers= getNumbers(linesToArray(FILE));
+let theNumbers= getNumbers(linesToArray(exampleInput));
 let initialValue= 0;
 let total= theNumbers.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue);
 
-for(let i = 20; i < 50; i++){
+for(let i = 0; i < 10; i++){
     console.log(theNumbers[i]);
 }
 
