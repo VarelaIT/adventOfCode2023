@@ -1,5 +1,7 @@
 /*
-Determine which games would have been possible if the bag had been loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. What is the sum of the IDs of those games?
+The power of a set of cubes is equal to the numbers of red, green, and blue cubes multiplied together. The power of the minimum set of cubes in game 1 is 48. In games 2-5 it was 12, 1560, 630, and 36, respectively. Adding up these five powers produces the sum 2286.
+
+For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
 */
 //import FS from 'fs';
 import {inputFile} from './inputFile';
@@ -51,21 +53,34 @@ function subDivide(lines: string[]){
 
 const gamePrimitiveValues= subDivide(getLines(inputFile));
 
-const validIndexes= gamePrimitiveValues.map((gameObj)=>{
-    let valid= true;
+const minimunSetPower= gamePrimitiveValues.map((gameObj)=>{
+    let powers= 0;
+    let minRed= 0;
+    let minGreen= 0;
+    let minBlue= 0;
     for(let i = 0; i < gameObj.games.length; i++){
-        //console.log(gameObj.games[i])
-        if( gameObj.games[i].red > constrains.red || gameObj.games[i].green > constrains.green || gameObj.games[i].blue > constrains.blue){
-            valid= false;
-            break;
-        }
+        if( gameObj.games[i].red > minRed)
+            minRed= gameObj.games[i].red;
+        if(gameObj.games[i].green > minGreen)
+            minGreen= gameObj.games[i].green;
+        if(gameObj.games[i].blue > minBlue)
+            minBlue= gameObj.games[i].blue;
     }
     
-    if(valid)
-        return gameObj.id;
-    else
-        return 0;
+    switch(true){
+        case minRed < 1 :
+            minRed = 1;
+            
+        case minGreen < 1 :
+            minGreen = 1;
+            
+        case minBlue < 1 :
+            minBlue = 1;
+
+        default:
+            return minRed * minGreen * minBlue;
+    }
 });
 
 let initialValue= 0;
-console.log(validIndexes.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue))
+console.log(minimunSetPower.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue))
