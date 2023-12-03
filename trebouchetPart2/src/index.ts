@@ -20,7 +20,7 @@ What is the sum of all of the calibration values?
 
 */
 import {FILE} from './inputFile'
-import {exampleInput} from './exampleInput'
+import {exampleInput, originalExample} from './exampleInput'
 
 const decoder= new Map<string, string>();
 decoder.set('one', '1');
@@ -62,32 +62,32 @@ function getNumbers(lines: string[]): number[]{
             //add a negative lookup for the number being checked.
             switch(lastItem){
                 case 'one':
-                    matchEnd = lines[i].match(/oneight/g)!;
+                    matchEnd = lines[i].match(/oneight|one(?!=ight)/g)!;
                     reviewItem= matchEnd? matchEnd[matchEnd.length - 1] : lastItem;
                     break
 
                 case 'three':
-                    matchEnd = lines[i].match(/threeight/g)!;
+                    matchEnd = lines[i].match(/threeight|three(?!=ight)/g)!;
                     reviewItem= matchEnd? matchEnd[matchEnd.length - 1] : lastItem;
                     break
 
                 case 'five':
-                    matchEnd = lines[i].match(/fiveight/g)!;
+                    matchEnd = lines[i].match(/fiveight|five(?!=ight)/g)!;
                     reviewItem= matchEnd? matchEnd[matchEnd.length - 1] : lastItem;
                     break
 
                 case 'seven':
-                    matchEnd = lines[i].match(/sevenine/g)!;
+                    matchEnd = lines[i].match(/sevenine|seven(!ine)/g)!;
                     reviewItem= matchEnd? matchEnd[matchEnd.length - 1] : lastItem;
                     break
 
                 case 'eight':
-                    matchEnd = lines[i].match(/eightwo|eighthree/g)!;
+                    matchEnd = lines[i].match(/eightwo|eighthree|eight(?!=wo)|eight(?!=hree)/g)!;
                     reviewItem= matchEnd? matchEnd[matchEnd.length - 1] : lastItem;
                     break
 
                 case 'nine':
-                    matchEnd = lines[i].match(/nineight/g)!;
+                    matchEnd = lines[i].match(/nineight|nine(?!=ight)/g)!;
                     reviewItem= matchEnd? matchEnd[matchEnd.length - 1] : lastItem;
                     break
 
