@@ -1,10 +1,10 @@
 export const exampleInput= 
-`two1nine
-eightwothree
-abcone2threexyz
-xtwone3four
-4nineeightseven2
+`oneightsrer
 zoneight234
 oneightoneight
+eightwoosdeighthreetwerw
+ightwosevenine
+hj9sd
+oneighttherroneigh
 7pqrstsixteen`;
 
