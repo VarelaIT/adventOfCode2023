@@ -18,4 +18,11 @@ The day three was a breeze.
 
 ## Gear Ratios 
 
+Not as easy as the previous day; only part one completed.
+
+#### _4 Dec 2023_
+
+## Scratchcards 
+
 Ongoing now...
+
