@@ -24,5 +24,7 @@ Not as easy as the previous day; only part one completed.
 
 ## Scratchcards 
 
+Solved the first part in the first try but the second part looks so confusing. Lets see what part 2 is about...
+
 Ongoing now...
 
