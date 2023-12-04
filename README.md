@@ -12,4 +12,10 @@ https://www.youtube.com/watch?v=2j_UTsCvNk0
 
 ## Cube Conundrum 
 
+The day three was a breeze.
+
+#### _3 Dec 2023_
+
+## Gear Ratios 
+
 Ongoing now...
