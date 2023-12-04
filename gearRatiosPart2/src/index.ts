@@ -1,16 +1,10 @@
-/*
-
-
-
-*/
-
 import {file, testCase, testCase2} from './inputFile';
 
-const digitReg= /\d/;
+const gearReg= /\*/;
 const noSymbolReg= /[^\.]/;
-const symbolReg= /[^\.\d]/;
+const digitReg= /\d/;
 
-//console.log(testCase2);
+//console.log(testCase);
 
 
 
@@ -46,27 +40,65 @@ function chunkLines(lines: number, index: number){
 
 
 
-function findSymbol(line: string[], i: number){
-    if((i > 0 && line[i - 1].match(noSymbolReg)) || (i < line.length && line[i].match(noSymbolReg)) || (i < line.length - 1 && line[i + 1].match(noSymbolReg)))
-        return true;
+function findDigit(line: string[], i: number): number[]{
+    let coord: number[]= [];
+    if(i > 0 && line[i - 1].match(digitReg))
+        coord.push(i - 1);
 
-    return false;
+    if(i < line.length && line[i].match(digitReg) && coord.length === 0)
+        coord.push(i);
+    
+    else if(i < line.length - 1 && !line[i].match(digitReg) && line[i + 1].match(digitReg))
+        coord.push(i + 1);
+    
+    return coord;
 }
 
 
 
 
-function restOfNumber(line: string[], i: number, values: string[]){
-    let f= i + 1; 
-    while(f < line.length){
-        if(line[f].match(digitReg))
-            values.push(line[f]);
-        else 
-            break;
-        f++;
+function restOfNumber(line: string[], i: number[], valueArr: number[]): number[]{
+    let value: string[]= [];
+    //console.log('indexes: ', i)
+
+    if(i.length === 1){
+        if(i[0] < 0)
+            return valueArr;
+
+        let f= i[0] - 2; 
+        while(f < line.length && f < i[0] + 3){
+            if(line[f].match(digitReg))
+                value.push(line[f]);
+            else if (value.length === 1 && f === i[0] - 1)
+                value= [];
+            f++;
+        }
+
+        valueArr.push(parseInt(value.join('')))
+        //console.log(valueArr)
+        return valueArr;
+    }else if(i.length === 2){
+        if(line[i[0] - 2].match(digitReg))
+            value.push(line[i[0] - 2]);
+        if(line[i[0] - 1].match(digitReg))
+            value.push(line[i[0] - 1]);
+        value.push(line[i[0]]);
+        valueArr= [parseInt(value.join(''))];
+        value= [];
+        
+        
+        if(line[i[1]].match(digitReg))
+            value.push(line[i[1]]);
+        if(line[i[1] + 1].match(digitReg))
+            value.push(line[i[1] + 1]);
+        value.push(line[i[1] + 2]);
+        valueArr.push(parseInt(value.join('')));
+        
+        //console.log('valores', valueArr)
+        return valueArr;
     }
 
-    return {integer: values, index: f};
+    return valueArr;
 }
 
 
@@ -75,36 +107,47 @@ function restOfNumber(line: string[], i: number, values: string[]){
 
 function getValues(input: Array<string[]>, chunk: ChunkInterface){
     let values: number[]= [];
-    let testValue: string[]= [];
 
     for(let i= 0; i < input[chunk.current].length; i++){
+        let testValue: number[]= [];
 
-        if(input[chunk.current][i].match(digitReg)){
-            testValue.push(input[chunk.current][i]);
-            if((chunk.previous >= 0 && findSymbol(input[chunk.previous], i)) || (chunk.next >= 0 && chunk.next < input.length && findSymbol(input[chunk.next], i))){
-                const resp= restOfNumber(input[chunk.current], i, testValue)
-                values.push(parseInt(resp.integer.join('')));
-                testValue= [];
-                i= resp.index
-            }
-        }else if(input[chunk.current][i].match(symbolReg)){
+        if(input[chunk.current][i].match(gearReg)){
+            //console.log('gear', input[chunk.current][i], chunk.current)
+            if(chunk.previous >= 0) 
+                testValue= restOfNumber(input[chunk.previous], findDigit(input[chunk.previous], i), testValue);
 
-            if(testValue.length > 0){
-                 values.push(parseInt(testValue.join('')));
+            if(testValue.length === 2){
+                values.push(testValue[0] * testValue[1]);
                 testValue= [];
-            }
+            } 
+                
+            if(i - 3 >= 0 && input[chunk.current][i - 1].match(digitReg))
+                testValue=  restOfNumber(input[chunk.current],  [i - 1], testValue);
+                
+            if(testValue.length === 2){
+                values.push(testValue[0] * testValue[1]);
+                testValue= [];
+            } 
+                
+            if(i + 1 < input[chunk.current].length && input[chunk.current][i + 1].match(digitReg))
+                testValue=  restOfNumber(input[chunk.current],  [i + 1], testValue);
+                
+            if(testValue.length === 2){
+                values.push(testValue[0] * testValue[1]);
+                testValue= [];
+            } 
+                
+            if(chunk.next > 0 && chunk.next < input.length) 
+                testValue= restOfNumber(input[chunk.next], findDigit(input[chunk.next], i), testValue);
 
-            if(input[chunk.current][i + 1].match(digitReg)){
-                const resp= restOfNumber(input[chunk.current], i, testValue)
-                values.push(parseInt(resp.integer.join('')));
+            if(testValue.length === 2){
+                values.push(testValue[0] * testValue[1]);
                 testValue= [];
-                i= resp.index
-            }    
-        }else{
-            testValue= [];
+            } 
+                
         }
     }
-    //console.log(values)
+    //console.log('values=', values)
 
     return values;
 }
@@ -121,7 +164,16 @@ function resolve(linesArr: Array<string[]>){
     console.log(value);
 }
 
-const input= getLines(file);
-resolve(input);
+const input2d= getLines(file);
+let input2dPart: Array<string[]>= [];
 
+/*
+//console.log(input2d.length)
+for(let i = 10; i < 20; i++){
+    input2dPart.push(input2d[i]);
+    console.log(input2d[i].join(''))
+}
+*/
+
+resolve(input2d);
 
