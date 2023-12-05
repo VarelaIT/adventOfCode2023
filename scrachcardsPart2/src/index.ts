@@ -3,7 +3,7 @@ import {file, testCase, testCase2} from './inputFile';
 const digitReg= /\d+/;
 const pipeDivisionReg= /\|/;
 
-//console.log(testCase2);
+console.log(testCase);
 
 function getLines(inputStr: string){
     return inputStr.split('\n');
@@ -41,33 +41,26 @@ function getMatches(winStr: string[], lines: Array<string[]>){
         const points= lines[i][1].match(winReg);
         if(points && points.length > 0)
             matches.push(points);
+        else
+            matches.push([]);
     }
 
     return matches;
 }
 
 
-function calculateMatches(match: Array<string[]>){
-    let total= 0;
-    
-    for(let i = 0; i < match.length; i++){
-        let points= 0;
+function calculateMatches(match: Array<string[]>, current: number= 0, until: number= 0, total: number= 0, sub: boolean= false){
 
-        match[i].forEach((assert, i, col)=>{
+    for(let i = current; i < until; i++){ 
+        total +=  match[i].length;
+        //console.table(match[i])
+        //console.log( sub, 'current', i, 'limit', until, 'total', total)
+        console.log("index", i, "limit", until)
 
-            if(i === 0 && col.length > 1)
-                points= 1
-            else if(i === col.length - 1){
-                if(points > 0)
-                    points *= 2;
-                else
-                    points+= 1;
-
-                total+= points;
-                points= 0;
-            }else
-                points*= 2;
-        });
+        for(let r = i + 1; r < match[i].length + 1; r++){
+            console.log("index", r, "limit", match[i].length + 1)
+            total= calculateMatches(match, r, match[i].length + 1, total, true);
+        }
     }
 
     return total;
@@ -76,18 +69,16 @@ function calculateMatches(match: Array<string[]>){
 
 
 
-
-
 function resolve(linesArr: string[]){
     const linesDiv= divideLines(linesArr);
     const winnersList= findWinners(linesDiv);
     const matches= getMatches(winnersList, linesDiv);
-    //console.log('matches:')
-    //console.table(matches)
-    console.log('total: ', calculateMatches(matches))
+    console.table(matches)
+    const total= calculateMatches(matches, 0, matches.length);
+    console.log('total: ', total)
 }
 
-const input= getLines(file);
+const input= getLines(testCase);
 resolve(input);
 
 
